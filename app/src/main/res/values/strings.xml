@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Farm Financial Report</string>
+    <string name="project">Projects</string>
+    <string name="cash_in">Cash-In</string>
+    <string name="cash_out">Cash-Out</string>
+    <string name="search_projects">Search projects</string>
+    <string name="search_tasks">Search task</string>
+</resources>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:padding="3dp"
+        android:textSize="18dp"
+        android:background="@color/colorText"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/project"
+        />
+
+    <EditText
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/date"
+        android:textSize="20dp"
+        android:hint="Date"
+        android:background="@drawable/rectangular_edittext"
+        android:drawableLeft="@mipmap/ic_date_range_black_24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/amount"
+        android:textSize="20dp"
+        android:hint="Amount"
+        android:background="@drawable/rectangular_edittext"
+        android:drawableLeft="@mipmap/ic_date_range_black_24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+    <Spinner
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:padding="3dp"
+        android:textSize="18dp"
+        android:background="@color/colorText"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/task"
+        />
+
+    <EditText
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/description"
+        android:textSize="20dp"
+        android:maxLength="160"
+        android:hint="Description"
+        android:singleLine="false"
+        android:gravity="top|left"
+        android:lines="5"
+        android:background="@drawable/rectangular_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/image_uri"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textSize="10dp"
+        />
+
+    <Button
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorText"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/attachment"
+        android:text="Attachment"
+        />
+
+</LinearLayout>

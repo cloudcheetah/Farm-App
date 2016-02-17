@@ -85,6 +85,10 @@ public class ProjectView extends LinearLayout implements View.OnClickListener {
         return projectContainerLayout;
     }
 
+    public void removeProject(String projectName){
+        adapter.removeProject(projectName);
+    }
+
     public void addProjectsToList(){
         for(ProjectsModel projectsModel : ProjectsModel.getProjectNames()){
             adapter.addProject(projectsModel.getProjectName());

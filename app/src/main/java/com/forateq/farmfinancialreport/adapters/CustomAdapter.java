@@ -39,6 +39,11 @@ public class CustomAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void removeProject(String projectName){
+        projectsList.remove(projectName);
+        notifyDataSetChanged();
+    }
+
     public void clearList(){
         projectsList.clear();
     }
@@ -76,10 +81,10 @@ public class CustomAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ProjectsModel projectsModel = ProjectsModel.getProjectByName(holder.tv.getText().toString());
                 ProjectsDetailsView projectsDetailsView = new ProjectsDetailsView(context, projectsModel.getProjectName());
-                projectsDetailsView.getProjectName().setText("Project Name: "+projectsModel.getProjectName());
-                projectsDetailsView.getProjectStartDate().setText("Project Start Date: "+projectsModel.getProjectStart());
-                projectsDetailsView.getProjectEndDate().setText("Project End Date: "+projectsModel.getProjectEnd());
-                projectsDetailsView.getProjectDetails().setText("Project Details: "+projectsModel.getProjectDescription());
+                projectsDetailsView.getProjectName().setText(projectsModel.getProjectName());
+                projectsDetailsView.getProjectStartDate().setText(projectsModel.getProjectStart());
+                projectsDetailsView.getProjectEndDate().setText(projectsModel.getProjectEnd());
+                projectsDetailsView.getProjectDetails().setText(projectsModel.getProjectDescription());
                 FarmApplication.viewDeque.addLast(view);
                 MainActivity.replaceView(projectsDetailsView);
             }

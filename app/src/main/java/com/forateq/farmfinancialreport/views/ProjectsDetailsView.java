@@ -6,10 +6,10 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.forateq.farmfinancialreport.R;
@@ -22,11 +22,12 @@ import com.melnykov.fab.FloatingActionButton;
  */
 public class ProjectsDetailsView extends LinearLayout implements View.OnClickListener {
 
-    private TextView projectName;
-    private TextView projectStartDate;
-    private TextView projectEndDate;
-    private TextView projectDetails;
+    private EditText projectName;
+    private EditText projectStartDate;
+    private EditText projectEndDate;
+    private EditText projectDetails;
     private EditText searchEditText;
+    private Button buttonSave;
     private ListView tasksListView;
     private FloatingActionButton fab;
     private TaskCustomAdapter adapter;
@@ -54,14 +55,15 @@ public class ProjectsDetailsView extends LinearLayout implements View.OnClickLis
 
     public void init(){
         inflate(getContext(), R.layout.project_details_view, this);
-        projectName = (TextView) findViewById(R.id.project_name);
-        projectStartDate = (TextView) findViewById(R.id.project_start_date);
-        projectEndDate = (TextView) findViewById(R.id.project_end_date);
-        projectDetails = (TextView) findViewById(R.id.project_description);
+        projectName = (EditText) findViewById(R.id.project_name);
+        projectStartDate = (EditText) findViewById(R.id.project_start_date);
+        projectEndDate = (EditText) findViewById(R.id.project_end_date);
+        projectDetails = (EditText) findViewById(R.id.project_details);
         tasksListView = (ListView) findViewById(R.id.tasks_container);
         searchEditText = (EditText) findViewById(R.id.search);
+        buttonSave = (Button) findViewById(R.id.save);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        adapter = new TaskCustomAdapter(context);
+        adapter = new TaskCustomAdapter(context, this, projectNameString);
         addTasksToList();
         tasksListView.setAdapter(adapter);
         fab.attachToListView(tasksListView);
@@ -88,20 +90,28 @@ public class ProjectsDetailsView extends LinearLayout implements View.OnClickLis
         });
     }
 
-    public TextView getProjectName() {
+    public EditText getProjectName() {
         return projectName;
     }
 
-    public TextView getProjectStartDate() {
+    public void removeTask(String taskName){
+        adapter.removeProject(taskName);
+    }
+
+    public EditText getProjectStartDate() {
         return projectStartDate;
     }
 
-    public TextView getProjectEndDate() {
+    public EditText getProjectEndDate() {
         return projectEndDate;
     }
 
-    public TextView getProjectDetails() {
+    public EditText getProjectDetails() {
         return projectDetails;
+    }
+
+    public Button getButtonSave() {
+        return buttonSave;
     }
 
     public String getProjectNameString() {
@@ -139,6 +149,9 @@ public class ProjectsDetailsView extends LinearLayout implements View.OnClickLis
                                 Log.e("Project Name", getProjectNameString());
                                 tasksModel.setProjectName(getProjectNameString());
                                 tasksModel.setTaskName(addTaskView.getTaskNameEditText().getText().toString());
+                                tasksModel.setTaskStartDate(addTaskView.getTaskStartDate().getText().toString());
+                                tasksModel.setTaskEndDate(addTaskView.getTaskEndDate().getText().toString());
+                                tasksModel.setTaskDetails(addTaskView.getTaskDetails().getText().toString());
                                 tasksModel.save();
                             }
 

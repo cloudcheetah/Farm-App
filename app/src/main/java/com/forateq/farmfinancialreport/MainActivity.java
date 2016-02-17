@@ -1,5 +1,6 @@
 package com.forateq.farmfinancialreport;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,21 +11,29 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.forateq.farmfinancialreport.models.CashInModel;
 import com.forateq.farmfinancialreport.models.CashOutModel;
+import com.forateq.farmfinancialreport.models.ProjectsModel;
+import com.forateq.farmfinancialreport.models.TasksModel;
 import com.forateq.farmfinancialreport.views.CashInView;
 import com.forateq.farmfinancialreport.views.CashOutView;
 import com.forateq.farmfinancialreport.views.ProjectView;
+import com.forateq.farmfinancialreport.views.ProjectsDetailsView;
+import com.forateq.farmfinancialreport.views.TaskDetailsView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -68,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         labelTextView = (TextView) toolbar.findViewById(R.id.label);
         backImageView = (ImageView) toolbar.findViewById(R.id.back);
         editImageView = (ImageView) toolbar.findViewById(R.id.edit);
+        editImageView.setOnClickListener(this);
         deleteImageView = (ImageView) toolbar.findViewById(R.id.delete);
+        deleteImageView.setOnClickListener(this);
         backImageView.setOnClickListener(this);
     }
 
@@ -159,6 +170,133 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else{
                     backView();
+                }
+                break;
+            }
+            case R.id.edit:{
+                if(viewContainer.getChildAt(0) instanceof ProjectsDetailsView){
+                    final ProjectsDetailsView projectsDetailsView = (ProjectsDetailsView) viewContainer.getChildAt(0);
+                    projectsDetailsView.getProjectStartDate().setEnabled(true);
+                    projectsDetailsView.getProjectStartDate().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setDate(projectsDetailsView.getProjectStartDate());
+                        }
+                    });
+                    projectsDetailsView.getProjectEndDate().setEnabled(true);
+                    projectsDetailsView.getProjectEndDate().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setDate(projectsDetailsView.getProjectEndDate());
+                        }
+                    });
+                    projectsDetailsView.getProjectDetails().setEnabled(true);
+                    projectsDetailsView.getButtonSave().setVisibility(View.VISIBLE);
+                    projectsDetailsView.getButtonSave().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ProjectsModel projectsModel = ProjectsModel.getProjectByName(projectsDetailsView.getProjectName().getText().toString());
+                            projectsModel.setProjectName(projectsDetailsView.getProjectName().getText().toString());
+                            projectsModel.setProjectStart(projectsDetailsView.getProjectStartDate().getText().toString());
+                            projectsModel.setProjectEnd(projectsDetailsView.getProjectEndDate().getText().toString());
+                            projectsModel.setProjectDescription(projectsDetailsView.getProjectDetails().getText().toString());
+                            projectsModel.save();
+                            projectsDetailsView.getProjectStartDate().setEnabled(false);
+                            projectsDetailsView.getProjectEndDate().setEnabled(false);
+                            projectsDetailsView.getProjectDetails().setEnabled(false);
+                            projectsDetailsView.getButtonSave().setVisibility(View.GONE);
+                        }
+                    });
+                }
+                else if(viewContainer.getChildAt(0) instanceof TaskDetailsView){
+                    final TaskDetailsView taskDetailsView = (TaskDetailsView) viewContainer.getChildAt(0);
+                    taskDetailsView.getTaskStartDateEditText().setEnabled(true);
+                    taskDetailsView.getTaskStartDateEditText().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setDate(taskDetailsView.getTaskStartDateEditText());
+                        }
+                    });
+                    taskDetailsView.getTaskEndDateEditText().setEnabled(true);
+                    taskDetailsView.getTaskEndDateEditText().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setDate(taskDetailsView.getTaskEndDateEditText());
+                        }
+                    });
+                    taskDetailsView.getTaskDetailsEditText().setEnabled(true);
+                    taskDetailsView.getSaveButton().setVisibility(View.VISIBLE);
+                    taskDetailsView.getSaveButton().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TasksModel.updateTask(taskDetailsView.getTaskNameEditText().getText().toString(), taskDetailsView.getTaskStartDateEditText().getText().toString(), taskDetailsView.getTaskEndDateEditText().getText().toString(), taskDetailsView.getTaskDetailsEditText().getText().toString());
+                            taskDetailsView.getSaveButton().setVisibility(View.GONE);
+                            taskDetailsView.getTaskStartDateEditText().setEnabled(false);
+                            taskDetailsView.getTaskEndDateEditText().setEnabled(false);
+                            taskDetailsView.getTaskDetailsEditText().setEnabled(false);
+                        }
+                    });
+                }
+                break;
+            }
+            case R.id.delete:{
+                if(viewContainer.getChildAt(0) instanceof ProjectsDetailsView){
+                    final ProjectsDetailsView projectsDetailsView = (ProjectsDetailsView) viewContainer.getChildAt(0);
+                    final String projectName = projectsDetailsView.getProjectName().getText().toString();
+                    new MaterialDialog.Builder(this)
+                            .title("Are you sure you want to delete this Project?")
+                            .titleColorRes(R.color.colorText)
+                            .backgroundColorRes(R.color.colorPrimaryDark)
+                            .widgetColorRes(R.color.colorPrimaryText)
+                            .positiveText("Ok")
+                            .positiveColorRes(R.color.colorText)
+                            .negativeText("Cancel")
+                            .negativeColorRes(R.color.colorText)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    super.onPositive(dialog);
+                                    new Delete().from(ProjectsModel.class).where("project_name = ?", projectName).execute();
+                                    backView();
+                                    ProjectView projectView = (ProjectView) viewContainer.getChildAt(0);
+                                    projectView.removeProject(projectName);
+                                }
+
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    super.onNegative(dialog);
+                                }
+                            })
+                            .show();
+                }
+                else if(viewContainer.getChildAt(0) instanceof TaskDetailsView){
+                    TaskDetailsView taskDetailsView = (TaskDetailsView) viewContainer.getChildAt(0);
+                    final String taskName = taskDetailsView.getTaskNameEditText().getText().toString();
+                    new MaterialDialog.Builder(this)
+                            .title("Are you sure you want to delete this Task?")
+                            .titleColorRes(R.color.colorText)
+                            .backgroundColorRes(R.color.colorPrimaryDark)
+                            .widgetColorRes(R.color.colorPrimaryText)
+                            .positiveText("Ok")
+                            .positiveColorRes(R.color.colorText)
+                            .negativeText("Cancel")
+                            .negativeColorRes(R.color.colorText)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    super.onPositive(dialog);
+                                    TasksModel.deleteTask(taskName);
+                                    backView();
+                                    ProjectsDetailsView projectsDetailsView = (ProjectsDetailsView) viewContainer.getChildAt(0);
+                                    projectsDetailsView.removeTask(taskName);
+                                }
+
+                                @Override
+                                public void onNegative(MaterialDialog dialog) {
+                                    super.onNegative(dialog);
+                                }
+                            })
+                            .show();
                 }
                 break;
             }
@@ -257,6 +395,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setDate(final EditText editText){
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dpd = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        editText.setText(dayOfMonth + "-"
+                                + (monthOfYear + 1) + "-" + year);
+
+                    }
+                }, mYear, mMonth, mDay);
+        dpd.show();
     }
 
 }

@@ -3,6 +3,10 @@ package com.forateq.farmfinancialreport.models;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.activeandroid.util.SQLiteUtils;
+
+import java.util.List;
 
 /**
  * Created by Vallejos Family on 2/10/2016.
@@ -85,5 +89,18 @@ public class CashOutModel extends Model {
         cashOutModel.setDescription(description);
         cashOutModel.setAttachmentFile(attachmentFile);
         cashOutModel.save();
+    }
+
+    public static List<CashOutModel> getExpenses(String projectName, String taskName){
+        return new Select().from(CashOutModel.class).where("project_name = ? AND task = ?", projectName, taskName).execute();
+    }
+
+    public static List<CashOutModel> getSearchExpense(String projectName, String taskName, String name){
+        String [] selectionArgs = new String[] {projectName, taskName, "%" + name + "%"};
+        List<CashOutModel> searchItems =
+                SQLiteUtils.rawQuery(CashOutModel.class,
+                        "SELECT * FROM CashOut WHERE project_name = ? AND task = ? AND  description LIKE ?",
+                        selectionArgs);
+        return searchItems;
     }
 }
